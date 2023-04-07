@@ -71,8 +71,7 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
                     self.session = session
                     self.logger = logger
                     self.request_account = request_account
-                    logger.info([method_name for method_name in dir(self) if callable(getattr(self, method_name))])
-                    self.logger.success("custom init of ServerConnectorAccountHandler ran through!")
+                    self.logger.debug("custom init of ServerConnectorAccountHandler ran through!")
 
                 async def get_name_from_device_id(self, device_id):
                     async with self._db_wrapper as session, session:
@@ -102,7 +101,7 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
                 async def get_account(self, device_id: int, purpose: AccountPurpose,
                                       location_to_scan: Optional[Location],
                                       including_google: bool = True) -> Optional[SettingsPogoauth]:
-                    self.logger.warning("get_account called")
+                    self.logger.debug("get_account called")
                     name = await self.get_name_from_device_id(device_id)
                     if not name:
                         return None
@@ -128,7 +127,7 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
                     return ret
 
                 async def mark_burnt(self, device_id: int, burn_type: Optional[BurnType]) -> None:
-                    self.logger.info("mark_burnt called")
+                    self.logger.debug("mark_burnt called")
                     name = await self.get_name_from_device_id(device_id)
                     if not name:
                         return None
@@ -137,7 +136,7 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
                     await self.request_to_server(url)
 
                 async def set_level(self, device_id: int, level: int) -> None:
-                    self.logger.info("set_level called")
+                    self.logger.debug("set_level called")
                     name = await self.get_name_from_device_id(device_id)
                     if not name:
                         return None
@@ -146,7 +145,7 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
                     await self.request_to_server(url)
 
                 async def get_assigned_username(self, device_id: int) -> Optional[str]:
-                    self.logger.info("get_assigned_username called")
+                    self.logger.debug("get_assigned_username called")
                     name = await self.get_name_from_device_id(device_id)
                     if not name:
                         return None
