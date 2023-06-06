@@ -65,12 +65,14 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
             class ServerConnectorAccountHandler(AbstractAccountHandler):
                 _assignment_lock: asyncio.Lock
 
-                def __init__(self, db_wrapper: DbWrapper, session, logger, request_account):
+                def __init__(self, db_wrapper: DbWrapper, session, logger, request_account, host, port):
                     self._assignment_lock = asyncio.Lock()
                     self._db_wrapper = db_wrapper
                     self.session = session
                     self.logger = logger
                     self.request_account = request_account
+                    self.server_host = host
+                    self.server_port = port
                     self.logger.debug("custom init of ServerConnectorAccountHandler ran through!")
 
                 async def get_name_from_device_id(self, device_id):
@@ -230,7 +232,8 @@ class accountServerConnector(mapadroid.plugins.pluginBase.Plugin):
             return False
         self.check_for_account_handler()
         if self.new_mode:
-            ah = ServerConnectorAccountHandler(self._mad["db_wrapper"], self.session, self.logger, self.request_account)
+            ah = ServerConnectorAccountHandler(self._mad["db_wrapper"], self.session, self.logger, self.request_account,
+                                               self.server_host, self.server_port)
             self.mm._MappingManager__account_handler = ah
             # I hope that's all places to patch ...
             self._mad['ws_server']._WebsocketServer__strategy_factory._StrategyFactory__account_handler = ah
